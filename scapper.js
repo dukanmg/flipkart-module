@@ -12,7 +12,7 @@ async function getFlipkartProductDetails(page, url,platform) {
         const priceSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(2) > div";
         const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
 
-        // await page.waitForSelector(priceSelector, { timeout: 50000 });
+        await page.waitForSelector(priceSelector, { timeout: 70000 });
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
         
         // await page.waitForSelector(offerSelector, { timeout: 30000 });
