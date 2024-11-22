@@ -10,14 +10,14 @@ async function getFlipkartProductDetails(page, url)
         await page.goto(url);
 
         const priceSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(2) > div";
-        const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
+        // const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
 
         await page.waitForSelector(priceSelector, { timeout: 60000 });
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
 
-        const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
+        // const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
 
-        return { url, platform: "Flipkart", price, offer };
+        return { url, platform: "Flipkart", price, "offer":"offer" };
     } 
     catch (error) 
     {
