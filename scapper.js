@@ -3,61 +3,66 @@ const { chromium } = require('playwright');
 
 
 // Scrape Flipkart product details
-async function getFlipkartProductDetails(page, url,platform) {
-    try {
-        // await page.goto(url);
-        await page.goto(url, { waitUntil: 'load', timeout: 100000 });
-
+async function getFlipkartProductDetails(page, url) 
+{
+    try 
+    {
+        await page.goto(url);
 
         const priceSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(2) > div";
         const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
 
-        await page.waitForSelector(priceSelector, { timeout: 70000 });
+        await page.waitForSelector(priceSelector, { timeout: 60000 });
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
-        
-        // await page.waitForSelector(offerSelector, { timeout: 30000 });
-        // const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
 
-        return { url, platform, price, "offer":"offer" };
-    } catch (error) {
+        const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
+
+        return { url, platform: "Flipkart", price, offer };
+    } 
+    catch (error) 
+    {
         return { url, error: `Flipkart Scraping Error: ${error.message}` };
     }
 }
 
 // Scrape product details based on platform
-async function scrapeProduct(browser, url, platform) {
+async function scrapeProduct(browser, url, platform) 
+{
     const page = await browser.newPage();
     let result;
-    result = await getFlipkartProductDetails(page, url,platform);
-
+    console.log(url)
+    result = await getFlipkartProductDetails(page, url);
+    
     await page.close();
-    return [result];
+    return result;
 }
 
 // Scrape all products concurrently
-async function scrapeAllProducts(url,platform) {
+async function scrapeAllProducts(collection) 
+{
     const browser = await chromium.launch({ headless: true, args: ['--disable-gpu','--disable-blink-features=AutomationControlled'] });
-    
-    const tasks = await scrapeProduct(browser, url, platform)
+    const tasks = Object.entries(collection).map(([platform, url]) =>
+        scrapeProduct(browser, url, platform)
+    );
+
     const results = await Promise.all(tasks);
-    
     await browser.close();
+
     return results;
 }
 
 // API endpoint
 module.exports.flipkartlivedatabyurl=async(req,res)=>{
-    let url = req.body.url;
-    let platform = "Flipkart"
+    let collection = req.body.collection;
 
-    if (!url) 
+    if (!collection) 
     {
         return res.status(400).json({ error: "Collection is required and must be a valid object" });
     }
     try
     {
         
-        let result = await scrapeAllProducts(url,platform)
+        let result = await scrapeAllProducts(collection)
         if(result)
         {
             console.log("Flipkart extracted data result: ",result)
