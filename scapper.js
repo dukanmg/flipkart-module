@@ -5,12 +5,14 @@ const { chromium } = require('playwright');
 // Scrape Flipkart product details
 async function getFlipkartProductDetails(page, url,platform) {
     try {
-        await page.goto(url);
+        // await page.goto(url);
+        await page.goto(url, { waitUntil: 'load', timeout: 100000 });
+
 
         const priceSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(2) > div";
         const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
 
-        await page.waitForSelector(priceSelector, { timeout: 50000 });
+        // await page.waitForSelector(priceSelector, { timeout: 50000 });
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
         
         // await page.waitForSelector(offerSelector, { timeout: 30000 });
