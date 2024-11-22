@@ -13,7 +13,7 @@ async function getFlipkartProductDetails(page, url,platform) {
         await page.waitForSelector(priceSelector, { timeout: 60000 });
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
         
-        await page.waitForSelector(priceSelector, { timeout: 60000 });
+        await page.waitForSelector(offerSelector, { timeout: 60000 });
         const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
 
         return { url, platform, price, offer };
