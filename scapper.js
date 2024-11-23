@@ -7,19 +7,28 @@ async function getFlipkartProductDetails(page, url) {
     try {
         await page.goto(url);
 
+        // Wait for 10 seconds (10000 milliseconds)
+        await page.waitForTimeout(10000);
+
+        // Define the selectors for price and offer
         const priceSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(2) > div";
         const offerSelector = "#container > div > div._39kFie.N3De93.JxFEK3._48O0EI > div.DOjaWF.YJG4Cf > div.DOjaWF.gdgoEp.col-8-12 > div:nth-child(3)";
 
-        await page.waitForSelector(priceSelector, { timeout: 120000 });
+        // Wait for the price selector to appear on the page (with a timeout)
+        await page.waitForSelector(priceSelector, { timeout: 50000 });
+        
+        // Extract price and offer values
         const price = (await page.$eval(priceSelector, el => el.innerText)).trim() || "Price not available";
-
         const offer = (await page.$eval(offerSelector, el => el.innerText)).trim() || "Offer not available";
 
+        // Return the details as an object
         return { url, platform: "Flipkart", price, offer };
     } catch (error) {
+        // In case of an error, return the error message
         return { url, error: `Flipkart Scraping Error: ${error.message}` };
     }
 }
+
 
 // Scrape product details based on platform
 async function scrapeProduct(browser, url, platform) 
